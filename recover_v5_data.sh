@@ -14,7 +14,8 @@ mkdir -p $PROJECT_DIR
 # Prepare some v5 node files
 cp $PROJECT_DIR/genesis.blob $DATA_PATH/
 cp $PROJECT_DIR/fullnode.node.yaml $DATA_PATH/
-sed -i "s/YOUR_HOME_DIR/$HOME/g" $DATA_PATH/fullnode.node.yaml
+sed -i "s|YOUR_HOME_DIR|$HOME|g" "$DATA_PATH/fullnode.node.yaml"
+
 
 # Build the v5 binaries
 cd $PROJECT_DIR/
