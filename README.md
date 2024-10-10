@@ -80,4 +80,4 @@ This will start your v5 node with the recovered data. The JSON RPC is available 
 
 ## License
 
-This project is licensed under the terms of the [MIT License](LICENSE).
+This was written in the name of 0L love.
