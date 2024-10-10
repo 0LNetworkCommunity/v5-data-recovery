@@ -38,7 +38,7 @@ ls
 
 # Restore the epochs
 # you can also copy/paste this
-for EPOCH in {$EPOCH_START..$EPOCH_END}; do
+for EPOCH in $(seq $EPOCH_START $EPOCH_END); do
     echo "Restoring epoch $EPOCH"
     
     # Extract the backup
