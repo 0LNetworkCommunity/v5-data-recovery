@@ -1,5 +1,18 @@
 ### v5 Data Recovery
 
+# Dependencies
+sudo apt update && sudo apt -y upgrade
+sudo apt -y install git zip unzip jq build-essential cmake clang llvm libgmp-dev secure-delete pkg-config libssl-dev lld tmux
+
+cd $HOME
+wget http://archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.1f-1ubuntu2_amd64.deb
+sudo dpkg -i libssl1.1_1.1.1f-1ubuntu2_amd64.deb
+wget http://archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl-dev_1.1.1f-1ubuntu2_amd64.deb
+sudo dpkg -i libssl-dev_1.1.1f-1ubuntu2_amd64.deb
+
+curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain stable -y
+source $HOME/.cargo/env
+
 # Settings
 export PROJECT_DIR=$HOME/v5-data-recovery
 export EPOCH_START=${EPOCH_START:-1}
@@ -38,7 +51,11 @@ rm -rf $PROJECT_DIR/db
 #tar -xvf 0L.archive.tar
 #tar --skip-old-files -xvf gnudrew_0L.archive.tar
 rm -rf $DB_PATH
+mkdir -p $DB_PATH
 tar -xvf /mnt/c/Users/Default/gnudrew_0L.archive.tar -C $DB_PATH
+
+# replace the YOUR_HOME_DIR in the fullnode.node.yaml with the actual home directory
+sed -i "s|YOUR_HOME_DIR|$HOME|g" "$DATA_PATH/fullnode.node.yaml"
 
 # start the node and and grab the pid
 RUST_LOG=info ${BIN_PATH}/diem-node -f $DATA_PATH/fullnode.node.yaml &
@@ -71,6 +88,7 @@ for EPOCH in $(seq $EPOCH_START $EPOCH_END); do
 
     # Get the epoch height
     VERSION=$(db-backup one-shot query node-state | cut -d ":" -d "," -f 2 | cut -d ":" -f 2| xargs)
+    # TEST VERSION FOR SNAPSHOTS BELOW
     echo "Epoch $EPOCH has version $VERSION"
     exit
 
