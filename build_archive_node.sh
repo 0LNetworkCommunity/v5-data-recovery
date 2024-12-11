@@ -85,3 +85,7 @@ for EPOCH in $(seq $EPOCH_START $EPOCH_END); do
 
     echo "Epoch $EPOCH backup complete."
 done
+
+# Kill the node
+kill $NODE_PID
+echo "Node killed."
