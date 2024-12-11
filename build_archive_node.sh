@@ -32,8 +32,11 @@ export BIN_PATH=$PROJECT_DIR/libra-legacy-v6/target/release
 # Get the backups
 cd $PROJECT_DIR
 rm -rf $PROJECT_DIR/db
-wget http://home.gouin.io/0L.archive.tar
-tar -xvf 0L.archive.tar
+# download but only the first 100 MB to test this
+#curl -o 0L.archive.tar http://home.gouin.io/0L.archive.tar
+#curl -r 0-100000000 -o 0L.archive.tar http://home.gouin.io/0L.archive.tar
+#tar -xvf 0L.archive.tar
+tar -xvf gnudrew_0L.archive.tar
 rm -rf $DB_PATH
 cp -rf $PROJECT_DIR/db $DB_PATH
 
@@ -50,6 +53,7 @@ cd $NEW_EPOCH_ARCHIVE
 # set the archive path as the new epoch archive
 export ARCHIVE_PATH=$HOME/$NEW_EPOCH_ARCHIVE
 export URL="http://localhost"
+export TRANS_LEN=1
 
 
 # Backup each epoch
@@ -66,10 +70,12 @@ for EPOCH in $(seq $EPOCH_START $EPOCH_END); do
     ${BIN_PATH}/db-backup one-shot backup --backup-service-address ${URL}:6186 epoch-ending --start-epoch ${PREVIOUS_EPOCH} --end-epoch ${EPOCH} local-fs --dir ${ARCHIVE_PATH}/${EPOCH}
 
     # Get the epoch height
-    EPOCH_HEIGHT=$(db-backup one-shot query node-state | cut -d ":" -d "," -f 2 | cut -d ":" -f 2| xargs)
+    VERSION=$(db-backup one-shot query node-state | cut -d ":" -d "," -f 2 | cut -d ":" -f 2| xargs)
+    echo "Epoch $EPOCH has version $VERSION"
+    exit
 
     # Backup transaction
-    ${BIN_PATH}/db-backup one-shot backup --backup-service-address ${URL}:6186 transaction --num_transactions ${TRANS_LEN} --start-version ${EPOCH_HEIGHT} local-fs --dir ${ARCHIVE_PATH}/${EPOCH}
+    ${BIN_PATH}/db-backup one-shot backup --backup-service-address ${URL}:6186 transaction --num_transactions ${TRANS_LEN} --start-version ${VERSION} local-fs --dir ${ARCHIVE_PATH}/${EPOCH}
 
     # Backup state snapshot
     ${BIN_PATH}/db-backup one-shot backup --backup-service-address ${URL}:6186 state-snapshot --state-version ${VERSION} local-fs --dir ${ARCHIVE_PATH}/${EPOCH}/${VERSION}
