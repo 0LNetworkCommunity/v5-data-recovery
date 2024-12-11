@@ -36,9 +36,9 @@ rm -rf $PROJECT_DIR/db
 #curl -o 0L.archive.tar http://home.gouin.io/0L.archive.tar
 #curl -r 0-100000000 -o 0L.archive.tar http://home.gouin.io/0L.archive.tar
 #tar -xvf 0L.archive.tar
-tar -xvf gnudrew_0L.archive.tar
+#tar --skip-old-files -xvf gnudrew_0L.archive.tar
 rm -rf $DB_PATH
-cp -rf $PROJECT_DIR/db $DB_PATH
+tar -xvf /mnt/c/Users/Default/gnudrew_0L.archive.tar -C $DB_PATH
 
 # start the node and and grab the pid
 RUST_LOG=info ${BIN_PATH}/diem-node -f $DATA_PATH/fullnode.node.yaml &
